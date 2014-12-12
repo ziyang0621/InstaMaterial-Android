@@ -14,7 +14,10 @@ import butterknife.InjectView;
 /**
  * Created by ziyang0621 on 12/11/14.
  */
-public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements View.OnClickListener {
+
+    private OnFeedItemClickListener onFeedItemClickListener;
+
     private static final int ANIMATED_ITEMS_COUNT = 2;
 
     private Context context;
@@ -58,6 +61,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             holder.ivFeedCenter.setImageResource(R.drawable.img_feed_center_2);
             holder.ivFeedBottom.setImageResource(R.drawable.img_feed_bottom_2);
         }
+
+        holder.ivFeedBottom.setOnClickListener(this);
+        holder.ivFeedBottom.setTag(position);
     }
 
 
@@ -81,5 +87,22 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void updateItems() {
         itemsCount = 10;
         notifyDataSetChanged();
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.ivFeedBottom) {
+            if (onFeedItemClickListener != null) {
+                onFeedItemClickListener.onCommentsClick(v, (Integer)v.getTag());
+            }
+        }
+    }
+
+    public void setOnFeedItemClickListener(OnFeedItemClickListener onFeedItemClickListener) {
+        this.onFeedItemClickListener = onFeedItemClickListener;
+    }
+
+    public interface OnFeedItemClickListener {
+        public void onCommentsClick(View v, int position);
     }
 }
